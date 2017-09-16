@@ -39,6 +39,10 @@ if __name__ == "__main__":
             for j in range(len(xopen)):
                 a -= lr*gradient_a(a, b, xopen[j], yopen[j])
                 b -= lr*gradient_b(a, b, xopen[j], yopen[j])
+                                
+                if j%5==0:
+                    lr *= 0.99 # Learning-rate decreases with the iteration.
+                    
                 #print(a, b, xopen[j], yopen[j], loss(a, b, xopen, yopen))
 
         result[index,0] = predict(a,b,len(xopen)+1)
