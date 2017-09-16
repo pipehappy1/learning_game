@@ -31,6 +31,7 @@ if __name__ == "__main__":
         
         yopen = stock.values[:, 1]
         xopen = np.arange(*yopen.shape)
+        result_lost = np.empty(len(xopen))
         
         a = 0.1
         b = 0
@@ -39,12 +40,15 @@ if __name__ == "__main__":
             for j in range(len(xopen)):
                 a -= lr*gradient_a(a, b, xopen[j], yopen[j])
                 b -= lr*gradient_b(a, b, xopen[j], yopen[j])
+                
+                result_lost[j] = loss(a, b, xopen, yopen)
+                if j>=1:
+                    if result_lost[j]<result_lost[j-1]:
+                        lr *= 1.02
+                    else:
+                        lr *= 0.97
                 #print(a, b, xopen[j], yopen[j], loss(a, b, xopen, yopen))
 
         result[index,0] = predict(a,b,len(xopen)+1)
         index += 1
     np.save('tomorrow_stock', result)
-
-    
-    
-    
