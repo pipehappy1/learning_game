@@ -18,13 +18,13 @@ def gradient_b(a, b, x, y):
 
 
 if __name__ == "__main__":
-    df = '/hdd/home/largedata/training_game/WIKI_PRICES_212b326a081eacca455e13140d7bb9db.zip'
+    df = '/hdd/home/largedata/training_game/us_stock_2017_09_11.zip'
     
     df = pd.read_csv(df)
     
     stock_ticker = df.groupby(df.ticker).sum().index.values
 
-    result = np.empty((len(stock_ticker), 1))
+    result = np.empty((len(stock_ticker), ), dtype=[('ticker', 'S10'), ('predict_adj_open', 'f4')])
     index = 0
     for ticker in stock_ticker:
         stock = df.loc[df.ticker==ticker, ['adj_volume', 'adj_open', 'adj_high', 'adj_low', 'adj_close']]
@@ -34,14 +34,15 @@ if __name__ == "__main__":
         
         a = 0.1
         b = 0
-        lr = 0.00000001 # Why this is bad? And how to improve it.
+        lr = 0.0001 # Why this is bad? And how to improve it.
         for i in range(1):
             for j in range(len(xopen)):
                 a -= lr*gradient_a(a, b, xopen[j], yopen[j])
                 b -= lr*gradient_b(a, b, xopen[j], yopen[j])
                 #print(a, b, xopen[j], yopen[j], loss(a, b, xopen, yopen))
 
-        result[index,0] = predict(a,b,len(xopen)+1)
+        result[index]['ticker'] = ticker
+        result[index]['predict_adj_open'] = predict(a,b,len(xopen)+1)
         index += 1
     np.save('tomorrow_stock', result)
 
