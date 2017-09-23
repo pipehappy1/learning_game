@@ -10,9 +10,9 @@ if __name__ == "__main__":
     for i in predict_912:
         val = i['predict_adj_open']
         if np.isnan(val):
-            val = 0
+            val = -1000000
         if np.isinf(val):
-            val = 0
+            val = -1000000
         cleaned[i['ticker'].decode()] = val
 
     true_price = {}
